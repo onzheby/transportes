@@ -3321,6 +3321,23 @@ transporte: [
     });
   })();
 </script>
+<script>
+  (function () {
+    const body = document.body;
+    const pre = document.getElementById('preloader');
+
+    function releaseScroll() {
+      body.classList.remove('is-preloading');   // <- habilita scroll
+      if (pre) pre.classList.add('hidden');     // <- oculta overlay
+    }
+
+    // Quita bloqueo al cargar
+    window.addEventListener('load', releaseScroll);
+
+    // Fallback por si algo impide el 'load'
+    setTimeout(releaseScroll, 2000);
+  })();
+</script>
 
 
   </body>
