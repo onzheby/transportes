@@ -5783,6 +5783,44 @@
         ).show();
       });
     </script>
+<script>
+(() => {
+  const modalEl = document.getElementById("pdfModal");
+  const frame   = document.getElementById("pdfFrame");
+  const titleEl = document.getElementById("pdfTitle");
+  const dlLink  = document.getElementById("pdfDownload");
+
+  // Directorio base del sitio actual (sirve para /repo/ o /repo/index.html)
+  const basePath = (() => {
+    const p = location.pathname;
+    // si termina en "/", deja ese directorio; si no, quita el archivo (index.html)
+    return p.endsWith("/") ? p : p.replace(/[^/]+$/, "");
+  })();
+
+  // Normaliza rutas: quita "/" inicial y antepone base del repo
+  const resolvePath = (url) => {
+    url = (url || "").replace(/^\//, ""); // /certificaciones/... -> certificaciones/...
+    return basePath + url;                 // /transportes/ + certificaciones/archivo.pdf
+  };
+
+  modalEl.addEventListener("show.bs.modal", (ev) => {
+    const btn   = ev.relatedTarget;
+    const title = btn?.getAttribute("data-title") || "Documento";
+    let   url   = btn?.getAttribute("data-pdf")   || "";
+
+    const full = resolvePath(url);
+
+    titleEl.textContent = title;
+    // encodeURI conserva "/" y codifica espacios/tildes
+    frame.src   = encodeURI(full);
+    dlLink.href = full;
+  });
+
+  modalEl.addEventListener("hidden.bs.modal", () => {
+    frame.src = ""; // libera memoria y evita scroll bloqueado en iOS
+  });
+})();
+</script>
 
     
   </body>
